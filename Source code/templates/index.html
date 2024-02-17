@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Engine</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <style>
+    body {
+      background-color: #1c1c1c; /* Deep dark gray background color */
+      color: #ffffff; /* Text color */
+    }
+
+    footer {
+      background-color: #8b0000; /* Deep red background color for the footer */
+      color: #ffffff; /* Text color for the footer */
+      text-align: center;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .search-container {
+      background-color: #333333; /* Dark gray background for the search container */
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .search-box {
+      /* margin-top: 20px; */
+    }
+
+    .title-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .title-container h1 {
+      color: #dc3545; /* Bootstrap danger color for red */
+      font-size: 2.5em; /* Increase font size */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-12 text-center">
+        <div class="logo-container">
+          <img class="img-fluid col-md-2" src="./static/img/esan_logo.png" alt="Esan Logo">
+        </div>
+        <div class="title-container">
+          <h1>Esan Baan Hao</h1>
+          <p>Search Engine</p>
+        </div>
+      </div>
+      
+
+      <div class="col-md-6 mt-3 search-container">
+        <form class="text-center search-box" method="GET" action="{{ url_for('search') }}">
+          <div class="input-group">
+            <input type="text" class="form-control" name="keyword" placeholder="Jak Si Kin Kao Ei Yang?" aria-label="Search"
+              aria-describedby="search-button">
+            <button type="submit" class="btn btn-danger" id="search-button">Search</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JavaScript and Popper.js (Add these scripts at the end of the body tag for better performance) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-o9IyI6lAgq5Cgnf5F92cFPrFqTc3gSxs1NlKAggBl5+ELqENn49Wg8frf4JzG1l6" crossorigin="anonymous"></script>
+
+  <footer>
+    <p>&copy; 2023 Esan Restaurant Search Engine. All rights reserved for All Esan people.</p>
+  </footer>
+</body>
+
+</html>

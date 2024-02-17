@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Search Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        /* Set the size of the map container */
+        body {
+            background-color: #1c1c1c;
+            /* Deep dark gray background color */
+            color: #ffffff;
+            /* Text color */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin-bottom: -60px;
+            /* Negative margin equal to footer height */
+        }
+
+        .container {
+            flex: 1;
+        }
+
+        footer {
+            background-color: #8b0000;
+            /* Deep red background color for the footer */
+            color: #ffffff;
+            /* Text color for the footer */
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            margin-top: auto;
+            /* Align the footer at the bottom */
+        }
+
+        #map {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        hr {
+            border-top: 1px solid #8b0000;
+            /* Deep red color for the horizontal rule */
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination .page-link {
+            background-color: #8b0000;
+            /* Deep red color for pagination links */
+            border-color: #8b0000;
+            color: #ffffff;
+            /* Dark grey color for pagination numbers */
+        }
+
+
+        .pagination .page-item.active .page-link {
+            background-color: #343a40;
+            /* Dark gray color for active pagination link */
+            border-color: #343a40;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #343a40;
+            /* Dark gray color for pagination links on hover */
+            border-color: #343a40;
+        }
+
+        .restaurant-card {
+            background-color: #333333;
+            color: #ffffff;
+            border: 1px solid #8b0000;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .rating {
+            color: #8b0000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        {% for doc in hits %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="restaurant-card">
+                    <h4>{{ doc['name'] }}</h4>
+                    <p>Type: {{ doc['type'] }}</p>
+                    <p>Time: {{ doc['time'] }}</p>
+                    <p>Rating: <span class="rating">&#9733; {{ doc['rating'] }}</span></p>
+                    <p>Details: {{ doc['Details (Comment/Desc)'] }}</p>
+                    <p>Telephone: {{ doc['tel'] }}</p>
+                    <p>Province: {{ doc['province'] }}</p>
+                    <p>Location: {{ doc['Locaton (Add-ons)'] }}</p>
+
+                    <div onload="initMap()" id="map"></div>
+                </div>
+                <hr>
+            </div>
+        </div>
+        <!-- JavaScript to initialize the map -->
+        <script>
+            function initMap() {
+                var geocoder = new google.maps.Geocoder();
+                var address = "{{ doc['Locaton (Add-ons)'] }}";
+
+                geocoder.geocode({ address: address }, function (results, status) {
+                    if (status === 'OK') {
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            center: results[0].geometry.location,
+                            zoom: 20
+                        });
+
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location,
+                            title: 'Location'
+                        });
+                    } else {
+                        alert('Geocode was not successful for the following reason: ' + status);
+                    }
+                });
+            }
+        </script>
+        {% endfor %}
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="{{ url_for('index') }}">Home</a></li>
+                {% if page_no!=1 %}
+                <li class="page-item"><a class="page-link" href="?keyword={{ keyword }}&page=1">First</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="?keyword={{ keyword }}&page={{ page_no-1 }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="?keyword={{ keyword }}&page={{ page_no-1 }}">{{
+                        page_no-1
+                        }}</a></li>
+                {% endif %}
+                {% if page_total!=1 %}
+                <li class="page-item active"><a class="page-link " href="#">{{ page_no }}</a></li>
+                {% endif %}
+                {% if page_no<page_total %} <li class="page-item"><a class="page-link"
+                        href="?keyword={{ keyword }}&page={{ page_no+1 }}">{{ page_no+1 }}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?keyword={{ keyword }}&page={{ page_no+1 }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link"
+                            href="?keyword={{ keyword }}&page={{ page_total }}">Last</a>
+                    </li>
+                    {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Bootstrap JavaScript and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-o9IyI6lAgq5Cgnf5F92cFPrFqTc3gSxs1NlKAggBl5+ELqENn49Wg8frf4JzG1l6"
+        crossorigin="anonymous"></script>
+
+    <!-- Google Maps API script -->
+    <script src="https://maps.googleapis.com/maps/api/js?key= INSERT API KEY HERE &callback=initMap"
+        async defer></script>
+    <footer>
+        <p>&copy; 2023 Esan Restaurant Search Engine. All rights reserved for All Esan people.</p>
+    </footer>
+</body>
+
+</html>
